@@ -1,18 +1,24 @@
 #! /bin/bash
+# basic steam CMD install
 
-# basic SteamCmd install
-sudo apt update && sudo apt upgrade -y
+# Install dependencies
+# sudo apt -qq update && sudo apt -qqy upgrade
+# sudo apt install -qqy software-properties-common
+# sudo add-apt-repository multiverse
+# sudo dpkg --add-architecture i386
+# sudo apt -qq update && sudo apt -qqy install lib32gcc1 wget curl ca-certificates
 
-sudo apt install -y software-properties-common
-sudo add-apt-repository multiverse
-sudo dpkg --add-architecture i386
-sudo apt update && sudo apt install -y lib32gcc1 wget curl ca-certificates
-
+# Manually install steam CMD
+SCRIPT_HOME=$(pwd)
+STEAMCMD_DIR=$(echo $HOME/steam_commander)
+mkdir $STEAMCMD_DIR && cd $STEAMCMD_DIR
 curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
-mkdir -p $HOME/.steam && ln -s $HOME/linux32 $HOME/.steam/sdk32
-
-./steamcmd.sh +login anonymous +force_install_dir /home/aj/cs_server +app_set_config 90 mod cstrike +app_update 90 validate +quit || true
-./steamcmd.sh +login anonymous +app_update 70 validate +quit || true
-./steamcmd.sh +login anonymous +app_update 10 validate +quit || true
-./steamcmd.sh +login anonymous +force_install_dir /home/aj/cs_server +app_set_config 90 mod cstrike +app_update 90 validate +quit || true
+# steam config and links
+mkdir -p $HOME/.steam
+ln -s $STEAMCMD_DIR/linux32 $HOME/.steam/sdk32
+# mkdir -p $HOME/.local/bin
+# ln -s $STEAMCMD_DIR/steamcmd.sh $HOME/.local/bin/steamcmd
+# source ~/.profile
+cd $SCRIPT_HOME
+./steam_commander.sh

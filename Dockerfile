@@ -11,11 +11,11 @@ ENV CS_HOSTNAME 63Encore
 ENV CS_PASSWORD ""
 ENV RCON_PASSWORD loda
 
-RUN apt update && apt upgrade -y
-RUN apt install -y software-properties-common
+RUN apt -qq update && apt -qqy upgrade
+RUN apt -qqy install software-properties-common
 RUN add-apt-repository multiverse
 RUN dpkg --add-architecture i386
-RUN apt update && apt install -y lib32gcc1 wget ca-certificates
+RUN apt -qq update && apt -qqy install lib32gcc1 wget ca-certificates
 
 RUN useradd -m steam
 WORKDIR /home/steam
@@ -49,7 +49,7 @@ WORKDIR /home/steam/cs16
 # RUN echo "linux addons/podbot/podbot_mm_i386.so" > cstrike/addons/metamod/plugins.ini
 # COPY liblist.gam cstrike/
 
-# Copy ESL configs
+# Copy configs
 COPY server.cfg cstrike/
 
 # Install aim maps
