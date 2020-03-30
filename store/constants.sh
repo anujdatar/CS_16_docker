@@ -1,6 +1,5 @@
 #! /bin/bash
 
-PORT=27015
 SV_LAN=0
 MAP="de_dust2"
 MAXPLAYERS=16

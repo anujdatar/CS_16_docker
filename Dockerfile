@@ -4,13 +4,24 @@ FROM ubuntu:latest
 # ENV vars for relevant directories
 ENV STEAMCMD_DIR "/home/steam/steamcmd"
 ENV HLDS_DIR "/home/steam/hlds"
+ENV PORT 27015
+ENV DEBIAN_FRONTEND noninteractive
 
 # basic dependency install
 RUN apt -qq update && apt -qqy upgrade
-RUN apt -qqy install software-properties-common
+RUN apt -qqy install software-properties-common apt-utils
+RUN apt -qqy install wget curl ca-certificates locales
 RUN add-apt-repository multiverse
 RUN dpkg --add-architecture i386
-RUN apt -qq update && apt -qqy install lib32gcc1 wget ca-certificates
+RUN apt -qq update && apt -qqy install lib32gcc1
+
+# fixing locale error
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
+RUN locale-gen en_US.UTF-8
+RUN yes 158 | dpkg-reconfigure locales
 
 # user setup
 RUN useradd -m steam
@@ -22,17 +33,14 @@ RUN mkdir -p $STEAMCMD_DIR
 WORKDIR $STEAMCMD_DIR
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
-RUN mkdir -p ~/.steam
-RUN ln -s $STEAMCMD_DIR/linux32 ~/.steam/sdk32
+RUN mkdir -p /home/steam/.steam
+RUN ln -s $STEAMCMD_DIR/linux32 /home/steam/.steam/sdk32
 
 # copy steam and cs install/control tool to container
-COPY ./steam_commander.sh ~/steam_commander.sh
+COPY steam_commander.sh /home/steam/steam_commander.sh
 
 # copy mods folder to container
-COPY ./mods ~/mods
-
-# Copy configs
-# COPY server.cfg cstrike/
+COPY mods /home/steam/mods
 
 # Install aim maps
 # COPY AimMapCs1.6/cstrike cstrike/
@@ -41,5 +49,8 @@ COPY ./mods ~/mods
 EXPOSE $PORT/tcp
 EXPOSE $PORT/udp
 
+# mount volume for configs and scripts
+VOLUME [ "/home/steam/store/", "/home/steam/custom_scripts" ]
+
 # run the steamcmd and counter strike controller script
-CMD [ "~/steam_commander.sh" ]
+CMD [ "/home/steam/steam_commander.sh" ]
