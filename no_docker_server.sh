@@ -2,11 +2,11 @@
 # basic steam CMD install
 
 # Install dependencies
-# sudo apt -qq update && sudo apt -qqy upgrade
-# sudo apt install -qqy software-properties-common
-# sudo add-apt-repository multiverse
-# sudo dpkg --add-architecture i386
-# sudo apt -qq update && sudo apt -qqy install lib32gcc1 wget curl ca-certificates
+sudo apt -qq update && sudo apt -qqy upgrade
+sudo apt install -qqy software-properties-common
+sudo add-apt-repository multiverse
+sudo dpkg --add-architecture i386
+sudo apt -qq update && sudo apt -qqy install lib32gcc1 wget curl ca-certificates
 
 # Manually install steam CMD
 SCRIPT_HOME=$(pwd)

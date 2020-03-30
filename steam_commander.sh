@@ -1,10 +1,9 @@
 #! /bin/bash
 source $(pwd)/store/constants.sh
-
-SCRIPT_HOME=$(pwd)
-# cd $STEAMCMD_DIR
+# SCRIPT_HOME=$(pwd)
 
 install() {
+  cd $STEAMCMD_DIR
   echo "Installing Counter Strike 1.6 Dedicated server"
   # install hlds and cs server
   ./steamcmd.sh +login anonymous +force_install_dir $HLDS_DIR +app_set_config 90 mod cstrike +app_update 90 validate +quit || true
@@ -71,9 +70,9 @@ shutdown() {
 }
 
 # Install/Update server files
-# [ ! -d "$HLDS_DIR/cstrike" ] && install || update
+[ ! -d "$HLDS_DIR/cstrike" ] && install || update
 
 echo "Starting Counter Strike 1.6 Dedicated Server"
 
-# cd $HLDS_DIR
-# ./hlds_run -game cstrike -strictportbind -ip 0.0.0.0 -port $PORT +sv_lan $SV_LAN +map $MAP -maxplayers $MAXPLAYERS +hostname $CS_HOSTNAME +sv_password $CS_PASSWORD +rcon_password $RCON_PASSWORD
+cd $HLDS_DIR
+./hlds_run -game cstrike -strictportbind -ip 0.0.0.0 -port $PORT +sv_lan $SV_LAN +map $MAP -maxplayers $MAXPLAYERS +hostname $CS_HOSTNAME +sv_password $CS_PASSWORD +rcon_password $RCON_PASSWORD
