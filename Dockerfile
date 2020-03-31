@@ -37,7 +37,7 @@ RUN mkdir -p /home/steam/.steam
 RUN ln -s $STEAMCMD_DIR/linux32 /home/steam/.steam/sdk32
 
 # copy steam and cs install/control tool to container
-COPY steam_commander.sh /home/steam/steam_commander.sh
+COPY cs_server.sh /home/steam/cs_server.sh
 
 # copy mods folder to container
 COPY mods /home/steam/mods
@@ -52,5 +52,6 @@ EXPOSE $PORT/udp
 # mount volume for configs and scripts
 VOLUME [ "/home/steam/store/", "/home/steam/custom_scripts" ]
 
-# run the steamcmd and counter strike controller script
-CMD [ "/home/steam/steam_commander.sh" ]
+# run the steamcmd counter strike installer and wait for input
+RUN \. /home/steam/cs_server.sh
+CMD [ "bash" ]
