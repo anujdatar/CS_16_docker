@@ -146,6 +146,7 @@ case $1 in
     echo "Available commands:"
     echo "  start: start cstrike server"
     echo "  stop: stop cstrike server"
+    echo "  restart: restart cstrike server"
     echo "  update: update cstrike server"
-    echo "  addons: install addons and maps";;
+    ;;
 esac
