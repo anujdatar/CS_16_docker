@@ -35,7 +35,13 @@ install() {
 
   # Install map packs
   echo "Installing map packs"
-  \. /home/steam/scripts/install_map_pack.sh;;
+  # Install de_minidust2 and aa_dima maps
+  echo "Installing \"Mini Dust 2\" and \"Dima\" maps"
+  tar xzf ~/addons/minidust_dima.tar.gz -C $HLDS_DIR/cstrike
+
+  # Install aim maps for CS 1.6
+  echo "Installing AIM map pack"
+  tar xzf ~/addons/aim_maps.tar.gz -C $HLDS_DIR
 
   echo "Installation complete"
 }
@@ -47,9 +53,9 @@ install_metamod() {
   echo "Installing MetaMod on game server"
   mkdir -p $HLDS_DIR/cstrike/addons
   # extract metamod
-  tar xzf ~/mods/metamod-1.21.1.tar.gz -C $HLDS_DIR/cstrike/addons/
+  tar xzf ~/addons/metamod-1.21.1.tar.gz -C $HLDS_DIR/cstrike/addons/
   # copy liblist.gam to enable metamod on game server
-  cp -fa ~/mods/liblist.gam $HLDS_DIR/cstrike/liblist.gam
+  cp -fa ~/addons/liblist.gam $HLDS_DIR/cstrike/liblist.gam
 }
 
 install_amxmodx() {
@@ -60,7 +66,7 @@ install_amxmodx() {
   
   echo "Installing AMXMODX MetaMod on game server"
   # extract amxmod
-  tar xzf ~/mods/amxmodx_cs-1.8.2_linux.tar.gz -C $HLDS_DIR/cstrike/addons/
+  tar xzf ~/addons/amxmodx_cs-1.8.2_linux.tar.gz -C $HLDS_DIR/cstrike/addons/
   # add amxmodx to metamod plugins list
   echo "linux addons/amxmodx/dlls/amxmodx_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
 }
@@ -73,7 +79,7 @@ install_podbot() {
   
   echo "Install POD-bot MetaMod on game server"
   # extract podbot
-  tar xzf ~/mods/podbot-3.0_22.tar.gz -C $HLDS_DIR/cstrike/addons/
+  tar xzf ~/addons/podbot-3.0_22.tar.gz -C $HLDS_DIR/cstrike/addons/
   # add podbot to metamod plugins list
   echo "linux addons/podbot/podbot_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
 }

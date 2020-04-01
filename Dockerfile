@@ -40,14 +40,7 @@ RUN ln -s $STEAMCMD_DIR/linux32 /home/steam/.steam/sdk32
 COPY cs_server.sh /home/steam/cs_server.sh
 
 # copy mods folder to container
-COPY mods /home/steam/mods
-
-# Install aim maps
-# COPY AimMapCs1.6/cstrike cstrike/
-
-# expose docker ports for external use
-EXPOSE $PORT/tcp
-EXPOSE $PORT/udp
+COPY addons /home/steam/addons
 
 # mount volume for configs and scripts
 RUN mkdir -p /home/steam/store
@@ -55,6 +48,10 @@ RUN mkdir -p /home/steam/scripts
 RUN chown -R steam:steam /home/steam/store
 RUN chown -R steam:steam /home/steam/scripts
 VOLUME [ "/home/steam/store/", "/home/steam/scripts" ]
+
+# expose docker ports for external use
+EXPOSE $PORT/tcp
+EXPOSE $PORT/udp
 
 # run the steamcmd counter strike installer and wait for input
 WORKDIR /home/steam/
