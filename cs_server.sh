@@ -2,9 +2,6 @@
 
 # Script to manage the Counter Strike 1.6 Dedicated Server
 
-# load server constants
-source ~/store/constants.sh
-
 load_config() {
   echo "Loading server configs"
   yes | cp -rfa ~/store/cfgs/. ~/hlds/cstrike/
@@ -36,12 +33,16 @@ install() {
   install_amxmodx
   install_podbot
 
+  # Install map packs
+  echo "Installing map packs"
+  \. /home/steam/scripts/install_map_pack.sh;;
+
   echo "Installation complete"
 }
 
 install_metamod() {
   # check if metamod is installed
-  [[ -d $HLDS_DIR/cstrike/addons/metamod ]] && echo "MetaMod already installed" && return
+  [ -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod already installed" && return
   
   echo "Installing MetaMod on game server"
   mkdir -p $HLDS_DIR/cstrike/addons
@@ -53,9 +54,9 @@ install_metamod() {
 
 install_amxmodx() {
   # check if amxmodx is installed
-  [[ -d $HLDS_DIR/cstrike/addons/amxmodx ]] && echo "AMXMODX MM already installed" && return
+  [ -d $HLDS_DIR/cstrike/addons/amxmodx ] && echo "AMXMODX MM already installed" && return
   # check metamod install
-  [[ ! -d $HLDS_DIR/cstrike/addons/metamod ]] && echo "MetaMod not installed" && install_metamod
+  [ ! -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod not installed" && install_metamod
   
   echo "Installing AMXMODX MetaMod on game server"
   # extract amxmod
@@ -66,9 +67,9 @@ install_amxmodx() {
 
 install_podbot() {
   # check if podbot is installed
-  [[ -d $HLDS_DIR/cstrike/addons/podbot ]] && echo "POD-bot MM already installed" && return
+  [ -d $HLDS_DIR/cstrike/addons/podbot ] && echo "POD-bot MM already installed" && return
   # check metamod install
-  [[ ! -d $HLDS_DIR/cstrike/addons/metamod ]] && echo "MetaMod not installed" && install_metamod
+  [ ! -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod not installed" && install_metamod
   
   echo "Install POD-bot MetaMod on game server"
   # extract podbot
@@ -84,6 +85,13 @@ update() {
 }
 
 start() {
+  # check Counter Strike 1.6 Dedicated Server install
+  echo "Checking Counter Strike 1.6 Dedicated Server installation"
+  [ ! -d "$HLDS_DIR/cstrike" ] && install || echo "Counter Strike 1.6 Dedicated Server installed"
+
+  # load server constants
+  source ~/store/constants.sh
+
   load_config
 
   echo "Starting Counter Strike 1.6 Dedicated Server"
@@ -94,6 +102,7 @@ start() {
 }
 
 stop() {
+  [ ! -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   pkill hlds_linux
   pkill hlds_run
   store_config
@@ -102,6 +111,7 @@ stop() {
 }
 
 restart() {
+  [ ! -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   echo "Restarting Counter Strike 1.6 Dedicated Server"
   store_config
   pkill hlds_linux
@@ -113,11 +123,10 @@ term_handler() {
 }
 
 # trap term_handler SIGTERM
-# Install/Update server files
-echo "Checking Counter Strike 1.6 Dedicated Server installation"
-[ ! -d "$HLDS_DIR/cstrike" ] && install || echo "Counter Strike 1.6 Dedicated Server already installed"
 
 case $1 in
+  install)
+    install;;
   update)
     update;;
   start)
@@ -126,9 +135,6 @@ case $1 in
     stop;;
   restart)
     restart;;
-  addons)
-    echo "Installing addons"
-    \. /home/steam/custom_scripts/additional_setup.sh;;
   *)
     echo "Usage: ./cs_server.sh [COMMAND]"
     echo "Available commands:"

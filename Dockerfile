@@ -18,7 +18,7 @@ RUN apt -qq update && apt -qqy install lib32gcc1
 # fixing locale error
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+# ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 RUN locale-gen en_US.UTF-8
 RUN yes 158 | dpkg-reconfigure locales
@@ -50,8 +50,13 @@ EXPOSE $PORT/tcp
 EXPOSE $PORT/udp
 
 # mount volume for configs and scripts
-VOLUME [ "/home/steam/store/", "/home/steam/custom_scripts" ]
+RUN mkdir -p /home/steam/store
+RUN mkdir -p /home/steam/scripts
+RUN chown -R steam:steam /home/steam/store
+RUN chown -R steam:steam /home/steam/scripts
+VOLUME [ "/home/steam/store/", "/home/steam/scripts" ]
 
 # run the steamcmd counter strike installer and wait for input
-RUN \. /home/steam/cs_server.sh
+WORKDIR /home/steam/
+RUN "./cs_server.sh" "install"
 CMD [ "bash" ]
