@@ -9,23 +9,21 @@ load_config() {
 
 store_config() {
   echo "Storing server configs"
+  [ ! -d "~/store/cfgs" ] && mkdir -p ~/store/cfgs || true
   yes | cp -rfa ~/hlds/cstrike/server.cfg ~/store/cfgs/server.cfg
   yes | cp -rfa ~/hlds/cstrike/custom_server.cfg ~/store/cfgs/custom_server.cfg
   yes | cp -rfa ~/hlds/cstrike/listip.cfg ~/store/cfgs/listip.cfg
   yes | cp -rfa ~/hlds/cstrike/banned.cfg ~/store/cfgs/banned.cfg
 
+  [ ! -d "~/store/cfgs/addons/podbot" ] && mkdir -p ~/store/cfgs/addons/podbots || true
   yes | cp -rfa ~/hlds/cstrike/addons/podbot/podbot.cfg ~/store/cfgs/addons/podbot/podbot.cfg
 }
 
 install() {
   cd $STEAMCMD_DIR
   echo "Installing Counter Strike 1.6 Dedicated server"
-  # install hlds and cs server
+  # install hlds and cs server, needs to be done more than once sometimes
   ./steamcmd.sh +login anonymous +force_install_dir $HLDS_DIR +app_set_config 90 mod cstrike +app_update 90 validate +quit || true
-  # both AppIDs 70 - hl1, 10- cs1.6 need logins cant use here
-  # AppID 90 is for Counter Strike 1.6 Dedicatd Server
-  # ./steamcmd.sh +login anonymous +app_update 70 +quit || true
-  # ./steamcmd.sh +login anonymous +app_update 10 +quit || true
   ./steamcmd.sh +login anonymous +force_install_dir $HLDS_DIR +app_set_config 90 mod cstrike +app_update 90 validate +quit || true
 
   # copy mods to server
@@ -82,6 +80,7 @@ install_podbot() {
   tar xzf ~/addons/podbot-3.0_22.tar.gz -C $HLDS_DIR/cstrike/addons/
   # add podbot to metamod plugins list
   echo "linux addons/podbot/podbot_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
+  tar xzf ~/addons/waypoints.tar.gz -C $HLDS_DIR/cstrike/addons/podbot/
 }
 
 update() {
@@ -94,41 +93,45 @@ start() {
   # check Counter Strike 1.6 Dedicated Server install
   echo "Checking Counter Strike 1.6 Dedicated Server installation"
   [ ! -d "$HLDS_DIR/cstrike" ] && install || echo "Counter Strike 1.6 Dedicated Server installed"
+  
+  # check if hlds is running
+  [ -n "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server is already running on port:$PORT" && return
 
   # load server constants
-  source ~/store/constants.sh
+  [ -f ~/store/constants.sh ] && source ~/store/constants.sh || true
 
   load_config
 
   echo "Starting Counter Strike 1.6 Dedicated Server"
   cd $HLDS_DIR
-  ./hlds_run -game cstrike -strictportbind -ip 0.0.0.0 -port $PORT +sv_lan $SV_LAN +map $MAP -maxplayers $MAXPLAYERS +hostname $CS_HOSTNAME +sv_password $CS_PASSWORD +rcon_password $RCON_PASSWORD & # wait ${!}
-  # echo "Counter Strike Dedicated Server has died"
-  # stop
+  ./hlds_run -game cstrike -strictportbind -ip 0.0.0.0 -port $PORT +sv_lan $SV_LAN +map $MAP -maxplayers $MAXPLAYERS +hostname $CS_HOSTNAME +sv_password $CS_PASSWORD +rcon_password $RCON_PASSWORD &
 }
 
 stop() {
-  [ ! -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
+  # check if hlds is running
+  [ -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   pkill hlds_linux
   pkill hlds_run
   store_config
   echo "Counter Strike 1.6 Dedicated Server has been stopped"
-  exit 143
+  exit 0
 }
 
 restart() {
-  [ ! -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
+  # check if hlds is running
+  [ -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   echo "Restarting Counter Strike 1.6 Dedicated Server"
   store_config
   pkill hlds_linux
 }
 
 term_handler() {
-    echo "SIGTERM received"
+    echo -e "\nSIGTERM/SIGINT received"
     stop
 }
 
-# trap term_handler SIGTERM
+trap term_handler SIGINT
+trap term_handler SIGTERM
 
 case $1 in
   install)

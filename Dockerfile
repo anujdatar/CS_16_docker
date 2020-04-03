@@ -7,6 +7,14 @@ ENV HLDS_DIR "/home/steam/hlds"
 ENV PORT 27015
 ENV DEBIAN_FRONTEND noninteractive
 
+# Server constants
+ENV SV_LAN 0
+ENV MAP "de_dust2"
+ENV MAXPLAYERS 16
+ENV CS_HOSTNAME "cs_server_name"
+ENV CS_PASSWORD "server_password"
+ENV RCON_PASSWORD "rcon_password"
+
 # basic dependency install
 RUN apt -qq update && apt -qqy upgrade
 RUN apt -qqy install software-properties-common apt-utils
