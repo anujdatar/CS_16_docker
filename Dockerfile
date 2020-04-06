@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Server constants
 ENV SV_LAN 0
-ENV MAP "de_dust2"
+ENV MAP "de_minidust2"
 ENV MAXPLAYERS 16
 ENV CS_HOSTNAME "cs_server_name"
 ENV CS_PASSWORD "server_password"
@@ -18,15 +18,15 @@ ENV RCON_PASSWORD "rcon_password"
 # basic dependency install
 RUN apt -qq update && apt -qqy upgrade
 RUN apt -qqy install software-properties-common apt-utils
-RUN apt -qqy install wget curl ca-certificates locales
 RUN add-apt-repository multiverse
 RUN dpkg --add-architecture i386
-RUN apt -qq update && apt -qqy install lib32gcc1
+RUN apt -qq update \
+    && apt -qqy install wget curl ca-certificates locales \
+    lib32gcc1 unzip unrar p7zip-full
 
 # fixing locale error
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
-# ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 RUN locale-gen en_US.UTF-8
 RUN yes 158 | dpkg-reconfigure locales
@@ -64,4 +64,7 @@ EXPOSE $PORT/udp
 # run the steamcmd counter strike installer and wait for input
 WORKDIR /home/steam/
 RUN "./cs_server.sh" "install"
-CMD [ "bash" ]
+# ENTRYPOINT [ "bash" ]
+# ENTRYPOINT [ "./cs_server.sh" ]
+# CMD [ "start" ]
+CMD ["sh", "-c", "/home/steam/cs_server.sh start & /bin/bash"]
