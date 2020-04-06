@@ -4,7 +4,7 @@
 
 load_config() {
   echo "Loading server configs"
-  yes | cp -rfa ~/store/cfgs/. ~/hlds/cstrike/
+  yes | cp -rfa ~/store/cfgs/* ~/hlds/cstrike/
 }
 
 store_config() {
@@ -109,7 +109,7 @@ start() {
 
 stop() {
   # check if hlds is running
-  [ -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
+  [ -z "$(pidof hlds_linux)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   pkill hlds_linux
   pkill hlds_run
   store_config
@@ -119,7 +119,7 @@ stop() {
 
 restart() {
   # check if hlds is running
-  [ -z "$(pidof hlds_run)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
+  [ -z "$(pidof hlds_linux)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return
   echo "Restarting Counter Strike 1.6 Dedicated Server"
   store_config
   pkill hlds_linux
