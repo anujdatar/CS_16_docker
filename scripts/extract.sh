@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # This is the ex function from .bashrc in Manjaro Linux
-# I did not write this function.
+# I did not write this function. not sure who did.
   ex() {
     if [ -f $1 ] ; then
     case $1 in
