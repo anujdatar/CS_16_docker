@@ -41,6 +41,10 @@ install() {
   echo "Installing AIM map pack"
   tar xzf ~/addons/aim_maps.tar.gz -C $HLDS_DIR
 
+  # Install Untitled maps
+  echo "Installing Untitled map pack"
+  tar xzf ~/addons/cs_untitld_1_2.tar.gz -C $HLDS_DIR
+
   echo "Installation complete"
 }
 
