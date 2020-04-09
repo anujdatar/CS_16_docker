@@ -35,15 +35,30 @@ install() {
   echo "Installing map packs"
   # Install de_minidust2 and aa_dima maps
   echo "Installing \"Mini Dust 2\" and \"Dima\" maps"
-  tar xzf ~/addons/minidust_dima.tar.gz -C $HLDS_DIR/cstrike
+  if [ -f ~/addons/minidust_dima.tar.gz ]; then
+    tar xzf ~/addons/minidust_dima.tar.gz -C $HLDS_DIR/cstrike
+  else
+    echo "Unable to locate $HOME/addons/minidust_dima.tar.gz"
+    echo "Please verify map archive and manually copy to server"
+  fi
 
   # Install aim maps for CS 1.6
   echo "Installing AIM map pack"
-  tar xzf ~/addons/aim_maps.tar.gz -C $HLDS_DIR
+  if [ -f ~/addons/aim_maps.tar.gz ]; then
+    tar xzf ~/addons/aim_maps.tar.gz -C $HLDS_DIR
+  else
+    echo "Unable to locate $HOME/addons/aim_maps.tar.gz"
+    echo "Please verify map archive and manually copy to server"
+  fi
 
   # Install Untitled maps
   echo "Installing Untitled map pack"
-  tar xzf ~/addons/cs_untitld_1_2.tar.gz -C $HLDS_DIR
+  if [ -f ~/addons/cs_untitld_1_2.tar.gz ]; then
+    tar xzf ~/addons/cs_untitld_1_2.tar.gz -C $HLDS_DIR
+  else
+    echo "Unable to locate $HOME/addons/cs_untitld_1_2.tar.gz"
+    echo "Please verify map archive and manually copy to server"
+  fi
 
   echo "Installation complete"
 }
@@ -53,24 +68,38 @@ install_metamod() {
   [ -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod already installed" && return
   
   echo "Installing MetaMod on game server"
-  mkdir -p $HLDS_DIR/cstrike/addons
-  # extract metamod
-  tar xzf ~/addons/metamod-1.21.1.tar.gz -C $HLDS_DIR/cstrike/addons/
-  # copy liblist.gam to enable metamod on game server
-  cp -fa ~/addons/liblist.gam $HLDS_DIR/cstrike/liblist.gam
+  if [ -f ~/addons/metamod-1.21.1.tar.gz ]; then
+    mkdir -p $HLDS_DIR/cstrike/addons
+    # extract metamod
+    tar xzf ~/addons/metamod-1.21.1.tar.gz -C $HLDS_DIR/cstrike/addons/
+    # copy liblist.gam to enable metamod on game server
+    cp -fa ~/addons/liblist.gam $HLDS_DIR/cstrike/liblist.gam
+  else 
+    echo "Unable to locate $HOME/addons/metamod-1.21.1.tar.gz"
+    echo "Please verify mod archive and manually copy to server"
+    return 1
+  fi
 }
 
 install_amxmodx() {
   # check if amxmodx is installed
-  [ -d $HLDS_DIR/cstrike/addons/amxmodx ] && echo "AMXMODX MM already installed" && return
+  [ -d $HLDS_DIR/cstrike/addons/amxmodx ] && echo "AMXmodX MM already installed" && return
   # check metamod install
   [ ! -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod not installed" && install_metamod
-  
-  echo "Installing AMXMODX MetaMod on game server"
-  # extract amxmod
-  tar xzf ~/addons/amxmodx_cs-1.8.2_linux.tar.gz -C $HLDS_DIR/cstrike/addons/
-  # add amxmodx to metamod plugins list
-  echo "linux addons/amxmodx/dlls/amxmodx_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
+  # check if metamod install was successful
+  [ $? -eq 1 ] && echo "MetaMod Install unsuccessful. Unable to install AMXmodX" && return 1
+
+  echo "Installing AMXmodX MetaMod on game server"
+  if [ -f ~/addons/amxmodx_cs-1.8.2_linux.tar.gz ]; then
+    # extract amxmod
+    tar xzf ~/addons/amxmodx_cs-1.8.2_linux.tar.gz -C $HLDS_DIR/cstrike/addons/
+    # add amxmodx to metamod plugins list
+    echo "linux addons/amxmodx/dlls/amxmodx_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
+  else 
+    echo "Unable to locate $HOME/addons/amxmodx_cs-1.8.2_linux.tar.gz"
+    echo "Please verify mod archive and manually copy to server"
+    return 1
+  fi
 }
 
 install_podbot() {
@@ -78,13 +107,22 @@ install_podbot() {
   [ -d $HLDS_DIR/cstrike/addons/podbot ] && echo "POD-bot MM already installed" && return
   # check metamod install
   [ ! -d $HLDS_DIR/cstrike/addons/metamod ] && echo "MetaMod not installed" && install_metamod
+  # check if metamod install was successful
+  [ $? -eq 1 ] && echo "MetaMod Install unsuccessful. Unable to install PoDBot" && return 1
   
   echo "Install POD-bot MetaMod on game server"
-  # extract podbot
-  tar xzf ~/addons/podbot-3.0_22.tar.gz -C $HLDS_DIR/cstrike/addons/
-  # add podbot to metamod plugins list
-  echo "linux addons/podbot/podbot_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
-  tar xzf ~/addons/waypoints.tar.gz -C $HLDS_DIR/cstrike/addons/podbot/
+  if [ -f ~/addons/podbot-3.0_22.tar.gz ]; then
+    # extract podbot
+    tar xzf ~/addons/podbot-3.0_22.tar.gz -C $HLDS_DIR/cstrike/addons/
+    # add podbot to metamod plugins list
+    echo "linux addons/podbot/podbot_mm_i386.so" >> $HLDS_DIR/cstrike/addons/metamod/plugins.ini
+    # copy extra waypoints
+    tar xzf ~/addons/waypoints.tar.gz -C $HLDS_DIR/cstrike/addons/podbot/\
+  else 
+    echo "Unable to locate $HOME/addons/podbot-3.0_22.tar.gz"
+    echo "Please verify mod archive and manually copy to server"
+    return 1
+  fi
 }
 
 update() {
