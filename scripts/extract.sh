@@ -16,21 +16,31 @@
       *.zip)       unzip $1;;
       *.Z)         uncompress $1;;
       *.7z)        7z x $1;;
-      *)           echo "'$1' not compatible, unable to extract archive" ;;
+      *)
+        echo "'$1' not compatible, unable to extract archive"
+        rm -rf $TARGET_DIR
+        exit 1;;
     esac
   else
     echo "'$1' is not a valid file"
+    rm -rf $TARGET_DIR
+    exit 1
   fi
   }
+
+  if [ -z "$TARGET_DIR" ]; then
+    echo "Error: Archive extraction target not specified"
+    exit 1
+  fi
 
 # Save current dir
 CURRENT_DIR=$(pwd)
 
 # make temp directory
-mkdir -p /tmp/extracted
+mkdir -p $TARGET_DIR
 
 # extract into target temp dir
-cd /tmp/extracted
+cd $TARGET_DIR
 ex $1
 
 # go back to current dir
