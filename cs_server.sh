@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 # Script to manage the Counter Strike 1.6 Dedicated Server
 
 load_config() {
