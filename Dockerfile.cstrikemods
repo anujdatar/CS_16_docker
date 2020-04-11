@@ -1,0 +1,13 @@
+FROM steamcmdbase
+
+RUN mkdir -p /home/steam/addons
+COPY [--chown=steam:steam] addons/* /home/steam/addons/
+
+# RUN "/home/steam/bin/install_mods.sh"
+# RUN "/home/steam/bin/install_maps.sh"
+
+# ADD [--chown=steam:steam] addons/cs_untitled_1_2.tar.gz /home/steam/hlds/
+
+# RUN "/home/steam/bin/cleanup.sh"
+
+ENTRYPOINT [ "bash" ]
