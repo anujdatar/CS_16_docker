@@ -1,5 +1,14 @@
 #! /bin/bash
 
+if [ $1 = "--help" ]; then
+echo
+  echo "Usage: install_addon [archive_path]"
+  echo
+  echo "Note: please use absolute path here. you can cd into dir and use \$(pwd)/archive.*"
+  echo
+  exit 0
+fi
+
 # This is the ex function from .bashrc in Manjaro Linux
 # I did not write this function. not sure who did.
 ex() {
