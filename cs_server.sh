@@ -61,6 +61,11 @@ install() {
   fi
 
   echo "Installation complete"
+
+  # clean up addons & map tarballs
+  echo "Cleaning up installation files"
+  rm -r /home/steam/addons
+
   return 0
 }
 
@@ -177,7 +182,7 @@ stop() {
   [ -z "$(pidof hlds_linux)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return 1
   pkill hlds_linux
   pkill hlds_run
-  store_config
+  # store_config
   echo "Counter Strike 1.6 Dedicated Server has been stopped"
   exit 0
 }
@@ -186,8 +191,9 @@ restart() {
   # check if hlds is running
   [ -z "$(pidof hlds_linux)" ] && echo "Counter Strike 1.6 Dedicated Server not running" && return 1
   echo "Restarting Counter Strike 1.6 Dedicated Server"
-  store_config
   pkill hlds_linux
+  pkill hlds_run
+  start
 }
 
 term_handler() {
@@ -210,7 +216,7 @@ case $1 in
   restart)
     restart;;
   *)
-    echo "Usage: ./cs_server.sh [COMMAND]"
+    echo "Usage: cs_server [COMMAND]"
     echo "Available commands:"
     echo "  start: start cstrike server"
     echo "  stop: stop cstrike server"
