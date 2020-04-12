@@ -34,10 +34,6 @@ WORKDIR /home/steam/
 RUN mkdir -p /home/steam/.steam
 RUN ln -s $STEAMCMD_DIR/linux32 /home/steam/.steam/sdk32
 
-# copy necessary scripts to image
-# RUN mkdir -p /home/steam/bin
-# COPY [--chown=steam:steam] bin/* /home/steam/bin/
-
 # copy mods and maps archives
 RUN mkdir -p /home/steam/addons
 COPY [--chown=steam:steam] addons/* /home/steam/addons/
@@ -47,9 +43,9 @@ COPY cs_server.sh /bin/cs_server
 COPY install_addon.sh /bin/install_addon
 
 # mount volume for configs and scripts
-RUN mkdir -p /home/steam/store && mkdir -p /home/steam/scripts
-RUN chown -R steam:steam /home/steam/store && chown -R steam:steam /home/steam/scripts
-VOLUME [ "/home/steam/store/", "/home/steam/scripts" ]
+RUN mkdir -p /home/steam/store && mkdir -p /home/steam/misc
+RUN chown -R steam:steam /home/steam/store && chown -R steam:steam /home/steam/misc
+VOLUME [ "/home/steam/store/", "/home/steam/misc" ]
 
 # expose docker ports for external use
 EXPOSE $PORT/tcp
